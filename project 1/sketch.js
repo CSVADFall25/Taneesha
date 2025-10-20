@@ -10,7 +10,7 @@ I consulted Chat GPT to debug my handleFile() function + successfully load exter
 For the remaining logic I referenced the p5.js online resources and past projects.
 ***/
 
-let input; let audio; let fft;
+let input; let audio; let soundFile;  let fft;
 
 let currentBand = "bass"; 
 let strokes = [];
@@ -98,32 +98,41 @@ function handleFile(file) {
   print(file);
 
   if (file.type === "audio") {
-    if (audio) {
-      audio.remove();
+
+    // stop and remove previous audio if it exists
+    if (soundFile) {
       soundFile.stop();
+      soundFile.disconnect(); // disconnect from FFT
       soundFile = null;
     }
+    if (audio) {
+      audio.remove();
+      audio = null;
+    }
+
+    // create HTML audio element for user control
     audio = createAudio(file.data);
     audio.position(10, 50);
     audio.attribute("controls", "");
 
-    soundFile = loadSound(file.data, () => { // user uploaded audio
+    // load p5.Sound for FFT analysis
+    soundFile = loadSound(file.data, () => {
       console.log("Audio loaded successfully!");
       fft.setInput(soundFile);
     });
 
-    audio.elt.onplay = () => { // controls
+    // sync HTML controls with p5.Sound playback
+    audio.elt.onplay = () => {
       if (!soundFile.isPlaying()) soundFile.loop();
     };
     audio.elt.onpause = () => {
       if (soundFile.isPlaying()) soundFile.pause();
     };
+    audio.elt.onended = () => {
+      soundFile.stop();
+    };
+
   } else {
-    if (audio) {
-      audio.remove();
-      if (soundFile) soundFile.stop();
-      soundFile = null;
-    }
     console.log("Please upload an audio file.");
   }
 }
