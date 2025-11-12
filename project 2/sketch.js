@@ -86,14 +86,14 @@ function setup() {
   filterMenu.option('Sep 2022 - Aug 2024');
   filterMenu.option('Sep 2024 - Nov 2025');
   filterMenu.changed(applyFilter);
-  
-  applyFilter();
 
   // timeline slider
   timelineSlider = createSlider(0, allDates.length - 1, 0, 1);
   timelineSlider.position(30, height)
   timelineSlider.style('width', '80%');
 
+  applyFilter();
+  
   // make mute button
   muteButton = createButton('🔊 Mute');
   muteButton.position(30, height - 60);
@@ -207,8 +207,9 @@ function applyFilter() {
     }
   }
 
-  // Update slider range
-  timelineSlider.attribute('max', filteredDates.length - 1);
+  
+  console.log("slider", timelineSlider);
+  timelineSlider.max = max(0, filteredDates.length - 1);
   timelineSlider.value(0);
   currentIndex = 0;
 
