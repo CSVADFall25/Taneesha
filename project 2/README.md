@@ -17,7 +17,7 @@ The interface includes several interactive components:
 
 * Audio Feedback: Three background songs—slow, medium, and fast—correspond to low, moderate, and high step counts.
 
-* UI Elements: filter menu allows users to change date ranges, mute button toggles sound, and info button (❔) displays usage instructions. 
+* UI Elements: filter menu allows users to change date ranges, mute button toggles sound, and info button displays usage instructions. 
 
 ## Reflection
 This project helped me explore the intersection of data, interaction, and web narrative. Converting my step data into an interactive scene made me think about how raw information can become experiential and emotional when tied to motion, sound, and play. 
