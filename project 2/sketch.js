@@ -297,6 +297,7 @@ function stopAllSongs() {
   songFast.stop();
 }
 
+//togglemute
 function toggleMute() {
   isMuted = !isMuted;
   if (isMuted) {
