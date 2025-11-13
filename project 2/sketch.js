@@ -24,7 +24,6 @@ let infoButton;
 let showInfo = false;
 
 
-
 function preload() {
 bg1 = loadImage('assets/bg1.png');
 bg2 = loadImage('assets/bg2.png');
@@ -87,11 +86,13 @@ function setup() {
   filterMenu.option('Sep 2024 - Nov 2025');
   filterMenu.changed(applyFilter);
 
+  
   // timeline slider
   timelineSlider = createSlider(0, allDates.length - 1, 0, 1);
   timelineSlider.position(30, height)
   timelineSlider.style('width', '80%');
 
+  
   applyFilter();
   
   // make mute button
@@ -123,6 +124,7 @@ function draw() {
   textAlign(LEFT, TOP);
   text(
     "- Move the sprite using arrow keys. \n" +
+    "- Hover over sprite to view step count. \n" +
     "- Use the timeline slider to scroll through days.\n" +
     "- Use the mute button to toggle sound.\n\n",
     70, 70, width - 140, height - 140
@@ -138,7 +140,14 @@ function draw() {
   }
 
   // use filtered data
-  currentIndex = timelineSlider.value();
+  // Read slider and clamp to available filtered indices
+  let sliderVal = Number(timelineSlider.value());
+  let maxIdx = Math.max(0, filteredDates.length - 1);
+  currentIndex = constrain(sliderVal, 0, maxIdx);
+  // if slider was out of range, update it so UI and state match
+  if (sliderVal !== currentIndex) {
+    timelineSlider.value(currentIndex);
+  }
   let currentDate = filteredDates[currentIndex];
   let currentSteps = filteredSteps[currentIndex];
 
@@ -207,9 +216,19 @@ function applyFilter() {
     }
   }
 
-  
+  // Update slider range
   console.log("slider", timelineSlider);
-  timelineSlider.max = max(0, filteredDates.length - 1);
+  // Make slider reflect filtered data range and step
+  let maxIndex = Math.max(0, filteredDates.length - 1);
+  timelineSlider.attribute('min', 0);
+  timelineSlider.attribute('max', maxIndex);
+  timelineSlider.attribute('step', 1);
+  // disable slider if no data
+  if (filteredDates.length === 0) {
+    timelineSlider.attribute('disabled', '');
+  } else {
+    timelineSlider.removeAttribute('disabled');
+  }
   timelineSlider.value(0);
   currentIndex = 0;
 
@@ -223,7 +242,9 @@ function drawTimeline(index) {
   rect(0, height - 10, width, 10);
 
   fill(121, 154, 166);
-  let progress = map(index, 0, filteredDates.length - 1, 0, width);
+  // avoid divide-by-zero / NaN when there's 0 or 1 item
+  let denom = Math.max(1, filteredDates.length - 1);
+  let progress = map(index, 0, denom, 0, width);
   rect(0, height - 10, progress, 10);
 }
 
