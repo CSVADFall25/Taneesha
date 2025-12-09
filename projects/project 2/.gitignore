@@ -1,0 +1,5 @@
+# Ignore Python virtual environment
+.venv/
+
+# Ignore raw Apple Health exports
+apple_health_export/
